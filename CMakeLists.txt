@@ -12,3 +12,6 @@ set(SRC_FILES
         src/controllers/category_controller.cpp
 )
 add_executable(cpp_inventory_manager_ ${SRC_FILES})
+
+include_directories(/usr/include/cppconn)
+target_link_libraries(cpp_inventory_manager_ PRIVATE mysqlcppconn)
