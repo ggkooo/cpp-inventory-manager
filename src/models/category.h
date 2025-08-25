@@ -1,14 +1,25 @@
 #pragma once
 #include <string>
+#include <memory>
+#include <vector>
+
+#include "db_connection.h"
 
 class Category
 {
 public:
-    Category(int id, const std::string& name);
+    explicit Category(std::string  name);
+    Category(int id, std::string name);
 
-    int getId() const;
-    std::string getName() const;
+    [[nodiscard]] int getId() const;
+    [[nodiscard]] std::string getName() const;
+
+    static void insert(const std::shared_ptr<sql::Connection>& conn, const std::string& name);
+    static Category getById(const std::shared_ptr<sql::Connection>& conn, int id);
+    static std::vector<Category> getAll(const std::shared_ptr<sql::Connection>& conn);
+    static void update(const std::shared_ptr<sql::Connection>& conn, int id, const std::string& name);
+    static void remove(const std::shared_ptr<sql::Connection>& conn, int id);
 private:
-    int id;
+    int id{};
     std::string name;
 };
