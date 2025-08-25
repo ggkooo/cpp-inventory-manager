@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 #include <vector>
 
 #include "../models/category.h"
@@ -11,6 +12,7 @@ public:
     void add(const std::string& name);
     [[nodiscard]] std::vector<Category> list() const;
     bool remove(int id);
+    [[nodiscard]] std::optional<Category> searchById(int id) const;
 
 private:
     DBConnection* dbConnection;

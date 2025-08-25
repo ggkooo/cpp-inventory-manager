@@ -18,3 +18,13 @@ bool CategoryController::remove(int id)
     Category::remove(dbConnection->getConnection(), id);
     return true;
 }
+
+std::optional<Category> CategoryController::searchById(int id) const {
+    auto categories = list();
+    for (const auto& category : categories) {
+        if (category.getId() == id) {
+            return category;
+        }
+    }
+    return std::nullopt;
+}
