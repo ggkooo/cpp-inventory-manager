@@ -17,10 +17,12 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 set(GUI_SRC_FILES
         src/gui/MainWindow.cpp
         src/gui/pages/HomePage.cpp
+        src/gui/pages/ProductsPage.cpp
 )
 set(GUI_HDR_FILES
         src/gui/MainWindow.h
         src/gui/pages/HomePage.h
+        src/gui/pages/ProductsPage.h
 )
 
 set(SRC_FILES
