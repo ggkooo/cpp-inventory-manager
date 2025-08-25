@@ -5,6 +5,10 @@
 #include <QWidget>
 #include <QStackedWidget>
 #include <QPushButton>
+#include "../models/db_connection.h"
+#include "../controllers/product_controller.h"
+#include "../controllers/category_controller.h"
+#include "pages/ProductsPage.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -19,6 +23,11 @@ private:
     QPushButton* btnProducts;
     QPushButton* btnCategories;
     QPushButton* btnExit;
+
+    DBConnection* dbConnection;
+    ProductController* productController;
+    CategoryController* categoryController;
+    ProductsPage* productsPage;
 };
 
 #endif // MAINWINDOW_H
