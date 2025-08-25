@@ -1,5 +1,8 @@
 #include "category_controller.h"
 
+CategoryController::CategoryController(DBConnection* dbConnection)
+    : dbConnection(dbConnection) {}
+
 void CategoryController::add(const Category& category)
 {
     categories.push_back(category);
@@ -34,4 +37,3 @@ const Category* CategoryController::searchById(int id) const
     }
     return nullptr;
 }
-
