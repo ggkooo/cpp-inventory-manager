@@ -137,9 +137,4 @@ MainWindow::MainWindow(QWidget *parent)
     });
 }
 
-MainWindow::~MainWindow() {
-    delete productsPage;
-    delete productController;
-    delete categoryController;
-    delete dbConnection;
-}
+MainWindow::~MainWindow() {}
