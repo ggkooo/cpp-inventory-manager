@@ -15,8 +15,8 @@ void listProducts(const ProductController& productController, const CategoryCont
     }
     std::cout << "\n--- Lista de Produtos ---\n";
     for (const auto& product : products) {
-        const Category* cat = categoryController.searchById(product.getCategoryId());
-        std::string categoryName = cat ? cat->getName() : "Desconhecida";
+        auto catOpt = categoryController.searchById(product.getCategoryId());
+        std::string categoryName = catOpt.has_value() ? catOpt->getName() : "Desconhecida";
         std::cout << "ID: " << product.getId()
                   << " | Nome: " << product.getName()
                   << " | Categoria: " << categoryName
@@ -55,9 +55,11 @@ int main()
         std::string user(user_c);
         std::string password(password_c);
         std::string schema(schema_c);
-        DBConnection dbConnection(host, user, password, schema);
-        ProductController productController(&dbConnection);
-        CategoryController categoryController(&dbConnection);
+        DBConnection db(host_c, user_c, password_c, schema_c);
+        auto conn = db.getConnection();
+
+        ProductController productController(&db);
+        CategoryController categoryController(&db);
 
         int option;
         do {
@@ -74,32 +76,25 @@ int main()
             std::cin.ignore();
 
             if (option == 1) {
-                int id;
                 std::string name;
-                std::cout << "ID da categoria: ";
-                std::cin >> id;
-                std::cin.ignore();
                 std::cout << "Nome da categoria: ";
                 std::getline(std::cin, name);
-                categoryController.add(Category(id, name));
+                categoryController.add(name);
                 std::cout << "Categoria adicionada!\n";
             }
             else if (option == 2) {
                 listCategories(categoryController);
             }
             else if (option == 3) {
-                int id, categoryId, quantity;
+                int categoryId, quantity;
                 std::string name;
-                std::cout << "ID do produto: ";
-                std::cin >> id;
-                std::cin.ignore();
                 std::cout << "Nome do produto: ";
                 std::getline(std::cin, name);
                 std::cout << "ID da categoria do produto: ";
                 std::cin >> categoryId;
                 std::cout << "Quantidade: ";
                 std::cin >> quantity;
-                productController.add(Product(id, name, categoryId, quantity));
+                productController.add(name, categoryId, quantity);
                 std::cout << "Produto adicionado!\n";
             }
             else if (option == 4) {
