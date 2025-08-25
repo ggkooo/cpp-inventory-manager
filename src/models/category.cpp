@@ -6,7 +6,7 @@
 
 #include "category.h"
 
-Category::Category(int id, std::string  name) : name(std::move(name)) {}
+Category::Category(int id, std::string  name) : id(id), name(std::move(name)) {}
 
 int Category::getId() const
 {
