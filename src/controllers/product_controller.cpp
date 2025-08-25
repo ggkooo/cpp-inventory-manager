@@ -1,37 +1,40 @@
 #include "product_controller.h"
 
-void ProductController::add(const Product& product)
+ProductController::ProductController(DBConnection* dbConnection)
+    : dbConnection(dbConnection) {}
+
+void ProductController::add(std::string name, int categoryId, int quantity) const
 {
-    products.push_back(product);
+    Product::insert(dbConnection->getConnection(), name, categoryId, quantity);
 }
 
 std::vector<Product> ProductController::show() const
 {
-    return products;
+    auto allProducts = Product::getAll(dbConnection->getConnection());
+    return allProducts;
 }
 
 bool ProductController::remove(int id)
 {
-    for (auto it = products.begin(); it != products.end(); ++it)
+    try
     {
-        if (it->getId() == id)
-        {
-            products.erase(it);
-            return true;
-        }
+        Product::remove(dbConnection->getConnection(), id);
+        return true;
+    } catch (const std::exception& e)
+    {
+        return false;
     }
-    return false;
 }
 
 Product* ProductController::searchById(int id)
 {
-    for (auto& product : products)
+    try
     {
-        if (product.getId() == id)
-        {
-            return &product;
-        }
+        Product product = Product::getById(dbConnection->getConnection(), id);
+        return new Product(product);
+    } catch (const std::exception& e)
+    {
+        return nullptr;
     }
-    return nullptr;
 }
 

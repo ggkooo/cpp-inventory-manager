@@ -1,15 +1,19 @@
 #pragma once
-#include "../models/category.h"
+#include <optional>
 #include <vector>
+
+#include "../models/category.h"
+#include "../models/db_connection.h"
 
 class CategoryController
 {
 public:
-    void add(const Category& category);
+    explicit CategoryController(DBConnection* dbConnection);
+    void add(const std::string& name);
     [[nodiscard]] std::vector<Category> list() const;
     bool remove(int id);
-    [[nodiscard]] const Category* searchById(int id) const;
+    [[nodiscard]] std::optional<Category> searchById(int id) const;
 
 private:
-    std::vector<Category> categories;
+    DBConnection* dbConnection;
 };
