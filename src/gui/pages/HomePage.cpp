@@ -9,3 +9,5 @@ HomePage::HomePage(QWidget *parent) : QWidget(parent) {
     layout->addWidget(label);
     setLayout(layout);
 }
+
+HomePage::~HomePage() {}
