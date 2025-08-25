@@ -8,7 +8,7 @@ class ProductController
 {
 public:
     explicit ProductController(DBConnection* dbConnection);
-    void add(const Product&product);
+    void add(std::string name, int categoryId, int quantity) const;
     [[nodiscard]] std::vector<Product> show() const;
     bool remove(int id);
     Product* searchById(int id);
