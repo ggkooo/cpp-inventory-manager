@@ -1,5 +1,8 @@
 #include "product_controller.h"
 
+ProductController::ProductController(DBConnection* dbConnection)
+    : dbConnection(dbConnection) {}
+
 void ProductController::add(const Product& product)
 {
     products.push_back(product);
