@@ -1,4 +1,7 @@
 #include <iostream>
+#include <laserpants/dotenv-0.9.3/dotenv.h>
+
+#include "models/db_connection.h"
 #include "models/product.h"
 #include "models/category.h"
 #include "controllers/product_controller.h"
@@ -36,87 +39,102 @@ void listCategories(const CategoryController& categoryController) {
     }
 }
 
-int main() {
-    ProductController productController;
-    CategoryController categoryController;
+int main()
+{
+    try
+    {
+        dotenv::init("../.env");
+        const char* host_c = std::getenv("DB_HOST");
+        const char* user_c = std::getenv("DB_USER");
+        const char* password_c = std::getenv("DB_PASSWORD");
+        const char* schema_c = std::getenv("DB_SCHEMA");
+        if (!host_c || !user_c || !password_c || !schema_c) {
+            throw std::runtime_error("Variáveis de ambiente do banco de dados não encontradas. Verifique o arquivo .env.");
+        }
+        std::string host(host_c);
+        std::string user(user_c);
+        std::string password(password_c);
+        std::string schema(schema_c);
+        DBConnection dbConnection(host, user, password, schema);
+        ProductController productController(&dbConnection);
+        CategoryController categoryController(&dbConnection);
 
-    // Products and categorys hardcoded examples
-    categoryController.add(Category(1, "Eletrônicos"));
-    categoryController.add(Category(2, "Alimentos"));
-    productController.add(Product(1, "Notebook", 1, 10));
-    productController.add(Product(2, "Arroz", 2, 50));
-
-    int option;
-    do {
-        std::cout << "\n===== Gerenciador de Estoque =====\n";
-        std::cout << "1. Adicionar categoria\n";
-        std::cout << "2. Listar categorias\n";
-        std::cout << "3. Adicionar produto\n";
-        std::cout << "4. Listar produtos\n";
-        std::cout << "5. Remover produto\n";
-        std::cout << "6. Remover categoria\n";
-        std::cout << "0. Sair\n";
-        std::cout << "Escolha uma opção: ";
-        std::cin >> option;
-        std::cin.ignore();
-
-        if (option == 1) {
-            int id;
-            std::string name;
-            std::cout << "ID da categoria: ";
-            std::cin >> id;
+        int option;
+        do {
+            std::cout << "\n===== Gerenciador de Estoque =====\n";
+            std::cout << "1. Adicionar categoria\n";
+            std::cout << "2. Listar categorias\n";
+            std::cout << "3. Adicionar produto\n";
+            std::cout << "4. Listar produtos\n";
+            std::cout << "5. Remover produto\n";
+            std::cout << "6. Remover categoria\n";
+            std::cout << "0. Sair\n";
+            std::cout << "Escolha uma opção: ";
+            std::cin >> option;
             std::cin.ignore();
-            std::cout << "Nome da categoria: ";
-            std::getline(std::cin, name);
-            categoryController.add(Category(id, name));
-            std::cout << "Categoria adicionada!\n";
-        }
-        else if (option == 2) {
-            listCategories(categoryController);
-        }
-        else if (option == 3) {
-            int id, categoryId, quantity;
-            std::string name;
-            std::cout << "ID do produto: ";
-            std::cin >> id;
-            std::cin.ignore();
-            std::cout << "Nome do produto: ";
-            std::getline(std::cin, name);
-            std::cout << "ID da categoria do produto: ";
-            std::cin >> categoryId;
-            std::cout << "Quantidade: ";
-            std::cin >> quantity;
-            productController.add(Product(id, name, categoryId, quantity));
-            std::cout << "Produto adicionado!\n";
-        }
-        else if (option == 4) {
-            listProducts(productController, categoryController);
-        }
-        else if (option == 5) {
-            int id;
-            std::cout << "ID do produto para remover: ";
-            std::cin >> id;
-            if (productController.remove(id))
-                std::cout << "Produto removido!\n";
-            else
-                std::cout << "Produto não encontrado.\n";
-        }
-        else if (option == 6) {
-            int id;
-            std::cout << "ID da categoria para remover: ";
-            std::cin >> id;
-            if (categoryController.remove(id))
-                std::cout << "Categoria removida!\n";
-            else
-                std::cout << "Categoria não encontrada.\n";
-        }
-        else if (option == 0) {
-            std::cout << "Saindo...\n";
-        }
-        else {
-            std::cout << "Opção inválida!\n";
-        }
-    } while (option != 0);
 
-    return 0;
+            if (option == 1) {
+                int id;
+                std::string name;
+                std::cout << "ID da categoria: ";
+                std::cin >> id;
+                std::cin.ignore();
+                std::cout << "Nome da categoria: ";
+                std::getline(std::cin, name);
+                categoryController.add(Category(id, name));
+                std::cout << "Categoria adicionada!\n";
+            }
+            else if (option == 2) {
+                listCategories(categoryController);
+            }
+            else if (option == 3) {
+                int id, categoryId, quantity;
+                std::string name;
+                std::cout << "ID do produto: ";
+                std::cin >> id;
+                std::cin.ignore();
+                std::cout << "Nome do produto: ";
+                std::getline(std::cin, name);
+                std::cout << "ID da categoria do produto: ";
+                std::cin >> categoryId;
+                std::cout << "Quantidade: ";
+                std::cin >> quantity;
+                productController.add(Product(id, name, categoryId, quantity));
+                std::cout << "Produto adicionado!\n";
+            }
+            else if (option == 4) {
+                listProducts(productController, categoryController);
+            }
+            else if (option == 5) {
+                int id;
+                std::cout << "ID do produto para remover: ";
+                std::cin >> id;
+                if (productController.remove(id))
+                    std::cout << "Produto removido!\n";
+                else
+                    std::cout << "Produto não encontrado.\n";
+            }
+            else if (option == 6) {
+                int id;
+                std::cout << "ID da categoria para remover: ";
+                std::cin >> id;
+                if (categoryController.remove(id))
+                    std::cout << "Categoria removida!\n";
+                else
+                    std::cout << "Categoria não encontrada.\n";
+            }
+            else if (option == 0) {
+                std::cout << "Saindo...\n";
+            }
+            else {
+                std::cout << "Opção inválida!\n";
+            }
+        } while (option != 0);
+
+        return 0;
+    } catch (const std::exception& e)
+    {
+        std::cerr << "Erro: " << e.what() << std::endl;
+        return 1;
+    }
 }
