@@ -38,3 +38,28 @@ Product* ProductController::searchById(int id)
     }
 }
 
+bool ProductController::update(const Product& product)
+{
+    try {
+        Product::update(
+            dbConnection->getConnection(),
+            product.getId(),
+            product.getName(),
+            product.getDescription(),
+            product.getCategoryId(),
+            product.getQuantity(),
+            product.getCostPrice(),
+            product.getSalePrice(),
+            product.getUnit(),
+            product.getSku(),
+            product.getSupplierId(),
+            product.getStatus(),
+            product.getWeight(),
+            product.getDimensions(),
+            product.getImage()
+        );
+        return true;
+    } catch (const std::exception& e) {
+        return false;
+    }
+}

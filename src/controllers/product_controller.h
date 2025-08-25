@@ -12,6 +12,8 @@ public:
     [[nodiscard]] std::vector<Product> show() const;
     bool remove(int id);
     Product* searchById(int id);
+    bool update(const Product& product);
+    DBConnection* getDbConnection() const { return dbConnection; }
 
 private:
     DBConnection* dbConnection;
