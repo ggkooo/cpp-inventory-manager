@@ -3,37 +3,18 @@
 CategoryController::CategoryController(DBConnection* dbConnection)
     : dbConnection(dbConnection) {}
 
-void CategoryController::add(const Category& category)
+void CategoryController::add(const std::string& name)
 {
-    categories.push_back(category);
+    Category::insert(dbConnection->getConnection(), name);
 }
 
 std::vector<Category> CategoryController::list() const
 {
-    return categories;
+    return Category::getAll(dbConnection->getConnection());
 }
 
 bool CategoryController::remove(int id)
 {
-    for (auto it = categories.begin(); it != categories.end(); ++it)
-    {
-        if (it->getId() == id)
-        {
-            categories.erase(it);
-            return true;
-        }
-    }
-    return false;
-}
-
-const Category* CategoryController::searchById(int id) const
-{
-    for (auto& category : categories)
-    {
-        if (category.getId() == id)
-        {
-            return &category;
-        }
-    }
-    return nullptr;
+    Category::remove(dbConnection->getConnection(), id);
+    return true;
 }
